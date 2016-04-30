@@ -14,10 +14,12 @@ todo
 
 The emulator is run from CLI. Run it without arguments to display help.
 
-´´´
+```
 chip86 <file> <speed> [tune]
-´´´
+```
 
+Arg | - | Description
+--- | --- | ---
 file | required | The Chip-8 application (rom).
 speed | required | Emulation speed, lower equals higher speed. Good values are 5-20.
 tune | optional | Emulation speed and smoothness control. Good values are 5-20.
@@ -26,18 +28,18 @@ If you are unsure about the speed and tune argument, 10 10 are good values to st
 
 ###Example
 
-´´´
+```
 chip86 test/count 5
-´´´
+```
 
 ##Keys
 
+Key | Description
+--- | ---
 PAGE DOWN | Decrease emulation speed. (Modifies speed argument).
 PAGE UP | Increase emulation speed. (Modifies speed argument).
-
 HOME | Emulation speed and smoothness control, increase. (Modifies tune argument).
 END  | Emulation speed and smoothness control, decrease. (Modifies tune argument).
-
 X | CHIP-8 key 0
 1 | CHIP-8 key 1
 2 | CHIP-8 key 2
@@ -59,27 +61,27 @@ V | CHIP-8 key F
 
 The test applications found in the test directory are written by Tommy Hellstrom. They are free to use and (re)distribute under GPLv3 License.
 
--flag1
+- flag1
         Validate flag when adding two registers.
         Expected output (5 first): 0, 1, 0, 0, 0
 
--flag2
+- flag2
         Validate flag when subtracting two registers.
         Expected output (5 first): 1, 0, 1, 1, 1
 
--flag3
+- flag3
         Validate flag on right shift.
         Expected output (5 first): 0, 1, 1, 1, 1
     
--flag4
+- flag4
         Validate flag on left shift.
         Expected output (5 first): 0, 1, 1, 1, 1
     
--count
+- count
         Counts from 0 to 9, and starts then over, in an infinite loop.
         Expected output: A count from 0 to 9, then restarts at 0.
 
--bsort
+- bsort
         Sorts 3060 integers, 0-255, using Bubblesort. This application does not draw to screen.
         Upon completion it will enter an infinite idle loop at address 230h.
         To validate the output a memory dump is needed, starting at address 23Eh.
