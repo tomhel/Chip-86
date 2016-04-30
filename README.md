@@ -1,6 +1,6 @@
 # Chip-86
 
-Chip-86 is a Chip-8 emulator using dynamic translation (or dynamic recompilation) to x86. Written in C++ by Tommy Hellstrom at the University of Gavle, Sweden, 2009.
+Chip-86 is a Chip-8 emulator using dynamic translation (or dynamic recompilation) to x86. Written in C++ at the University of Gavle, Sweden, 2009.
 
 ##License
 
@@ -70,7 +70,7 @@ V | CHIP-8 key F
 
 ##Testing
 
-The test applications found in the test directory are written by Tommy Hellstrom. They are free to use and (re)distribute under GPLv3 License.
+The test applications found in the test directory.
 
 - flag1
 
