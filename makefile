@@ -5,7 +5,7 @@
 #
 
 CPP = g++
-CPPFLAGS = -m32 -ansi -Wall
+CPPFLAGS = -ansi -Wall
 GL_CFLAGS = -lGL
 SDL_CFLAGS = $(shell sdl-config --cflags)
 SDL_LDFLAGS = $(shell sdl-config --libs)

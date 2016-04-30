@@ -8,7 +8,18 @@ GPLv3
 
 ##Building
 
-todo
+Requires SDL and OpenGL support
+
+1. Install libsdl-dev
+
+    ```
+    apt-get install libsdl-dev
+    ```
+
+2. Build
+    ```
+    make
+    ```
 
 ##Usage
 
