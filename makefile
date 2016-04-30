@@ -9,14 +9,14 @@ CPPFLAGS = -m32 -ansi -Wall
 GL_CFLAGS = -lGL
 SDL_CFLAGS = $(shell sdl-config --cflags)
 SDL_LDFLAGS = $(shell sdl-config --libs)
-OPTIMIZE = -O3 -fomit-frame-pointer -w
+OPTIMIZE = -O2 -fomit-frame-pointer -w
 OUT = chip86
 
 
 all: clean $(OUT)
 
 $(OUT): main.o Translator.o TranslationCache.o CodeGenerator.o RegTracker.o
-	$(CPP) $(OPTIMIZE) $(CPPFLAGS) $(SDL_CFLAGS) $(SDL_LDFLAGS) $(GL_CFLAGS) main.o Translator.o TranslationCache.o CodeGenerator.o RegTracker.o -o $(OUT)
+	$(CPP) $(OPTIMIZE) $(CPPFLAGS) main.o Translator.o TranslationCache.o CodeGenerator.o RegTracker.o -o $(OUT) $(SDL_CFLAGS) $(SDL_LDFLAGS) $(GL_CFLAGS)
 
 main.o: main.cpp Translator.o TranslationCache.o Chip8def.h
 	$(CPP) $(OPTIMIZE) $(CPPFLAGS) -c main.cpp

@@ -12,7 +12,7 @@
      *   20090531     me        created/modified original
      *
      * License information:
-     *   To be decided... possibly GPL
+     *   GPLv3
      *
      ********************************************************/
 
@@ -336,9 +336,9 @@ void initGL()
     glOrtho(0, WINDOW_WIDTH, WINDOW_HEIGHT, 0, 0, 1);
     glEnable(GL_TEXTURE_2D);
     glDisable(GL_DEPTH_TEST);
-	//glDisable(GL_CULL_FACE);
-	//glDisable(GL_DITHER);
-	//glDisable(GL_BLEND);
+    //glDisable(GL_CULL_FACE);
+    //glDisable(GL_DITHER);
+    //glDisable(GL_BLEND);
     glMatrixMode (GL_MODELVIEW);
     glLoadIdentity();
     glTranslatef (0.375, 0.375, 0);
@@ -383,7 +383,7 @@ void printHelp()
 {
     printf("%s v%s\n\n", APP_NAME, APP_VERSION);
     printf("%s is a Chip-8 emulator with dynamic translation to x86.\n", APP_NAME);
-    printf("Programmed in C++ by Tommy Hellstrom at the University of Gavle,\n");
+    printf("Written in C++ by Tommy Hellstrom at the University of Gavle,\n");
     printf("Sweden, 2009.\n\n");
     printf("USAGE:\n");
     printf("\t%s file speed [tune]\n\n", APP_BINARY_NAME);

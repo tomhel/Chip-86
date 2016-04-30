@@ -12,12 +12,13 @@
      *   20090519     me        created
      *
      * License information:
-     *   To be decided... possibly GPL
+     *   GPLv3
      *
      ********************************************************/
 
 #include <cstdlib>
 #include <cstring>
+#include <sys/mman.h>
 
 #include "CodeGenerator.h"
 
@@ -154,17 +155,19 @@ Label_t CodeGenerator::newLabel()
  * RETURNS
  * void pointer to generated code
  */
-void* CodeGenerator::getAlignedCodePointer(void **const pBlock)
+void* CodeGenerator::getAlignedCodePointer(void **const pBlock, size_t *size)
 {
     void *pCode;
 
     //om det finns kod
     if(mIndex > 0)
     {
-        //beräkna och lägg in alla hopp
+        //calculate and add all jumps
         insertJumps();
-        //allokera nytt minne och kopiera
-        *pBlock = malloc(mIndex + CG_ALIGNMENT);
+        //Allocate new memory and copy
+        //*pBlock = malloc(mIndex + CG_ALIGNMENT);
+        *size = mIndex + CG_ALIGNMENT;
+        *pBlock = mmap(NULL, mIndex + CG_ALIGNMENT, PROT_EXEC | PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
         const uintptr_t blockAddr = (uintptr_t)*pBlock;
         pCode = (void*)(blockAddr + (CG_ALIGNMENT - (blockAddr & (CG_ALIGNMENT - 1))));
         //pCode = *pBlock;
@@ -175,6 +178,7 @@ void* CodeGenerator::getAlignedCodePointer(void **const pBlock)
     {
         *pBlock = NULL;
         pCode = NULL;
+        *size = 0;
     }
 
     return pCode;
@@ -187,22 +191,27 @@ void* CodeGenerator::getAlignedCodePointer(void **const pBlock)
  * RETURNS
  * void pointer to generated code
  */
-void* CodeGenerator::getCodePointer()
+void* CodeGenerator::getCodePointer(size_t *size)
 {
     void *pCode;
 
-    //om det finns kod
+    //if we have some code
     if(mIndex > 0)
     {
-        //beräkna och lägg in alla hopp
+        //Calculate and add all jumps
         insertJumps();
-        //allokera nytt minne och kopiera
-        pCode = malloc(mIndex);
+        //Allocate memory and copy
+        //pCode = malloc(mIndex);
+        *size = mIndex;
+        pCode = mmap(NULL, mIndex, PROT_EXEC | PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
         memcpy(pCode, mMachineCode, mIndex);
         reset();
     }
     else
+    {
         pCode = NULL;
+        *size = 0;
+    }
 
     return pCode;
 }

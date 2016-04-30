@@ -12,7 +12,7 @@
      *   20090519     me        created
      *
      * License information:
-     *   To be decided... possibly GPL
+     *   GPLv3
      *
      ********************************************************/
 

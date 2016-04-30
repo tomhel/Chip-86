@@ -12,7 +12,7 @@
      *   20090425     me        created
      *
      * License information:
-     *   To be decided... possibly GPL
+     *   GPLv3
      *
      ********************************************************/
 
@@ -100,8 +100,9 @@ void Translator::translate()
             {
                 generateReturn(*pNode);
                 void *pBlock;
-                void *const pCode = codegen.getAlignedCodePointer(&pBlock);
-                mBlocks.push_front(new CodeBlock(pBlock, pCode, address, opcount));
+                size_t size;
+                void *const pCode = codegen.getAlignedCodePointer(&pBlock, &size);
+                mBlocks.push_front(new CodeBlock(pBlock, pCode, address, opcount, size));
                 address = pNode->address;
                 opcount = 1;
 
@@ -118,8 +119,9 @@ void Translator::translate()
     }
 
     void *pBlock;
-    void *const pCode = codegen.getAlignedCodePointer(&pBlock);
-    mBlocks.push_front(new CodeBlock(pBlock, pCode, address, opcount));
+    size_t size;
+    void *const pCode = codegen.getAlignedCodePointer(&pBlock, &size);
+    mBlocks.push_front(new CodeBlock(pBlock, pCode, address, opcount, size));
 }
 
 /**

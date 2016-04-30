@@ -12,7 +12,7 @@
      *   20090519     me        created
      *
      * License information:
-     *   To be decided... possibly GPL
+     *   GPLv3
      *
      ********************************************************/
 
@@ -23,6 +23,7 @@
 #include <list>
 #include <vector>
 #include <stdint.h>
+#include <stddef.h>
 
 #include "x86def.h"
 
@@ -156,7 +157,7 @@ class CodeGenerator
          * RETURNS
          * void pointer to generated code
          */
-        void* getAlignedCodePointer(void **const pBlock);
+        void* getAlignedCodePointer(void **const pBlock, size_t *size);
 
         /**
          * Copies the code to the heap and return a pointer to it
@@ -165,7 +166,7 @@ class CodeGenerator
          * RETURNS
          * void pointer to generated code
          */
-        void* getCodePointer();
+        void* getCodePointer(size_t *size);
 
         /**
          * Force alignment of current position (inserts nops)
