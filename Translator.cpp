@@ -193,7 +193,7 @@ void Translator::generateReturn(const DecodedOpcode &rNode)
     if(!rNode.inCondition)
         tracker.saveRegisters();
 
-    tracker.restoreClobbered();
+    tracker.restoreDirty();
 
     codegen.mov_r32i32(X86_REG_EAX, rNode.address);
 
@@ -233,7 +233,7 @@ void Translator::generate00E0(const DecodedOpcode &rNode)
     const Label_t loop = codegen.newLabel();
     const int r32 = tracker.temporaryRegX32();
 
-    tracker.clobberRegX32(r32);
+    tracker.dirtyRegX32(r32);
 
     codegen.mov_r32i32(r32, mC8_screenBaseAddr);
 
@@ -272,7 +272,7 @@ void Translator::generate00EE(const DecodedOpcode &rNode)
 
     bool pop = false;
 
-    if(!tracker.isClobberedX32(tracker.REG_TMP))
+    if(!tracker.isDirtyX32(tracker.REG_TMP))
     {
         pop = true;
         codegen.push_r32(tracker.REG_TMP);
@@ -287,14 +287,14 @@ void Translator::generate00EE(const DecodedOpcode &rNode)
     if(pop)
         codegen.pop_r32(tracker.REG_TMP);
 
-    tracker.restoreClobbered();
+    tracker.restoreDirty();
 
     codegen.ret();
 
     /*if(!mCondition)
         tracker.saveRegisters();
 
-    tracker.restoreClobbered();
+    tracker.restoreDirty();
 
     codegen.xor_r32r32(X86_REG_EAX, X86_REG_EAX);
     codegen.ret();*/
@@ -324,7 +324,7 @@ void Translator::generate1NNN(const DecodedOpcode &rNode)
     if(!rNode.inCondition)
         tracker.saveRegisters();
 
-    tracker.restoreClobbered();
+    tracker.restoreDirty();
 
     codegen.mov_r32i32(X86_REG_EAX, rNode.arg3);
 
@@ -355,7 +355,7 @@ void Translator::generate2NNN(const DecodedOpcode &rNode)
 
     bool pop = false;
 
-    if(!tracker.isClobberedX32(tracker.REG_TMP))
+    if(!tracker.isDirtyX32(tracker.REG_TMP))
     {
         pop = true;
         codegen.push_r32(tracker.REG_TMP);
@@ -370,7 +370,7 @@ void Translator::generate2NNN(const DecodedOpcode &rNode)
     if(pop)
         codegen.pop_r32(tracker.REG_TMP);
 
-    tracker.restoreClobbered();
+    tracker.restoreDirty();
 
     codegen.mov_r32i32(X86_REG_EAX, rNode.arg3);
 
@@ -382,7 +382,7 @@ void Translator::generate2NNN(const DecodedOpcode &rNode)
     if(!mCondition)
         tracker.saveRegisters();
 
-    tracker.restoreClobbered();
+    tracker.restoreDirty();
 
     codegen.mov_r32i32(X86_REG_EAX, retval);
     codegen.ret();*/
@@ -932,7 +932,7 @@ void Translator::generateBNNN(const DecodedOpcode &rNode)
         tracker.allocRegX8(X86_REG_AL, rNode.arg1);
     }
 
-    tracker.restoreClobbered();
+    tracker.restoreDirty();
     codegen.movzx_r32r8(X86_REG_EAX, X86_REG_AL);
     codegen.add_r32i32(X86_REG_EAX, rNode.arg3);
 
@@ -961,7 +961,7 @@ void Translator::generateCXNN(const DecodedOpcode &rNode)
 {
     tracker.allocRegX8(X86_REG_AL, rNode.arg1, false);
 
-    tracker.clobberRegX32(X86_REG_EDX);
+    tracker.dirtyRegX32(X86_REG_EDX);
 
     if(tracker.isAllocatedRegX8(X86_REG_AH))
         for(int i = 1; i < X86_COUNT_REGS_8BIT; i++)
@@ -973,7 +973,7 @@ void Translator::generateCXNN(const DecodedOpcode &rNode)
 
     if(tracker.isAllocatedRegX8(X86_REG_AH))
     {
-        tracker.clobberRegX32(tracker.REG_TMP);
+        tracker.dirtyRegX32(tracker.REG_TMP);
         codegen.mov_r32r32(tracker.REG_TMP, X86_REG_EAX);
     }
 
@@ -983,7 +983,7 @@ void Translator::generateCXNN(const DecodedOpcode &rNode)
             codegen.push_r32(X86_REG_EDX);
         else
         {
-            tracker.clobberRegX32(tracker.REG_TMP);
+            tracker.dirtyRegX32(tracker.REG_TMP);
             codegen.mov_r32r32(tracker.REG_TMP, X86_REG_EDX);
         }
     }
@@ -1053,13 +1053,13 @@ void Translator::generateDXYN(const DecodedOpcode &rNode)
     const int rtmp8_c = X86_REG_BH;
     const int rtmp8_b = X86_REG_DH;
 
-    tracker.clobberRegX32(rtmp32_y);
-    tracker.clobberRegX32(rtmp32_x);
-    tracker.clobberRegX8(rtmp8_b);
-    tracker.clobberRegX8(rtmp8_cmp);
+    tracker.dirtyRegX32(rtmp32_y);
+    tracker.dirtyRegX32(rtmp32_x);
+    tracker.dirtyRegX8(rtmp8_b);
+    tracker.dirtyRegX8(rtmp8_cmp);
 
     if(rNode.arg3 != 0)
-        tracker.clobberRegX8(rtmp8_c);
+        tracker.dirtyRegX8(rtmp8_c);
 
     const Label_t loop1 = codegen.newLabel();
 
@@ -1168,7 +1168,7 @@ void Translator::generateEX9E(const DecodedOpcode &rNode)
     const int r8 = tracker.allocRegX8(rNode.arg1);
     const int r32 = tracker.temporaryRegX32();
 
-    tracker.clobberRegX32(r32);
+    tracker.dirtyRegX32(r32);
     tracker.saveRegisters();
 
     const int rt32 = r8 & 0x3; //r8 mod 4
@@ -1231,7 +1231,7 @@ void Translator::generateEXA1(const DecodedOpcode &rNode)
     const int r8 = tracker.allocRegX8(rNode.arg1);
     const int r32 = tracker.temporaryRegX32();
 
-    tracker.clobberRegX32(r32);
+    tracker.dirtyRegX32(r32);
     tracker.saveRegisters();
 
     const int rt32 = r8 & 0x3; //r8 mod 4
@@ -1285,7 +1285,7 @@ void Translator::generateFX07(const DecodedOpcode &rNode)
     const int r8 = tracker.allocRegX8(rNode.arg1, false);
     const int r32 = tracker.temporaryRegX32();
 
-    tracker.clobberRegX32(r32);
+    tracker.dirtyRegX32(r32);
 
     codegen.mov_r32i32(r32, mC8_delaytimerAddr);
     codegen.mov_r8m8(r8, r32);
@@ -1316,8 +1316,8 @@ void Translator::generateFX0A(const DecodedOpcode &rNode)
 {
     const int r32 = tracker.temporaryRegX32();
 
-    tracker.clobberRegX32(r32);
-    tracker.clobberRegX32(X86_REG_ECX);
+    tracker.dirtyRegX32(r32);
+    tracker.dirtyRegX32(X86_REG_ECX);
 
     const Label_t lblPRESSED = codegen.newLabel();
 
@@ -1333,7 +1333,7 @@ void Translator::generateFX0A(const DecodedOpcode &rNode)
     }
     //loop until i == 16
 
-    tracker.restoreClobbered();
+    tracker.restoreDirty();
     codegen.mov_r32i32(X86_REG_EAX, rNode.address);
     codegen.ret();
 
@@ -1343,7 +1343,7 @@ void Translator::generateFX0A(const DecodedOpcode &rNode)
     codegen.mov_r32i32(r32, mC8_regBaseAddr + rNode.arg1);
     codegen.mov_m8r8(r32, X86_REG_CL);
 
-    tracker.restoreClobbered();
+    tracker.restoreDirty();
     codegen.mov_r32i32(X86_REG_EAX, rNode.address + C8_OPCODE_SIZE);
 
     codegen.ret();
@@ -1371,7 +1371,7 @@ void Translator::generateFX15(const DecodedOpcode &rNode)
     const int r8 = tracker.allocRegX8(rNode.arg1);
     const int r32 = tracker.temporaryRegX32();
 
-    tracker.clobberRegX32(r32);
+    tracker.dirtyRegX32(r32);
 
     codegen.mov_r32i32(r32, mC8_delaytimerAddr);
     codegen.mov_m8r8(r32, r8);
@@ -1399,7 +1399,7 @@ void Translator::generateFX18(const DecodedOpcode &rNode)
     const int r8 = tracker.allocRegX8(rNode.arg1);
     const int r32 = tracker.temporaryRegX32();
 
-    tracker.clobberRegX32(r32);
+    tracker.dirtyRegX32(r32);
 
     codegen.mov_r32i32(r32, mC8_soundtimerAddr);
     codegen.mov_m8r8(r32, r8);
@@ -1428,7 +1428,7 @@ void Translator::generateFX1E(const DecodedOpcode &rNode)
     const int r2 = tracker.allocRegX8(rNode.arg1);
     const int r32 = tracker.temporaryRegX32();
 
-    tracker.clobberRegX32(r32);
+    tracker.dirtyRegX32(r32);
 
     codegen.movzx_r32r8(r32, r2);
     codegen.add_r32r32(r1,r32);
@@ -1461,7 +1461,7 @@ void Translator::generateFX29(const DecodedOpcode &rNode)
     const int r2 = tracker.allocRegX8(rNode.arg1);
     const int r32 = tracker.temporaryRegX32();
 
-    tracker.clobberRegX32(r32);
+    tracker.dirtyRegX32(r32);
 
 	codegen.movzx_r32r8(r1, r2);
 	codegen.mov_r32r32(r32,r1);
@@ -1505,7 +1505,7 @@ void Translator::generateFX33(const DecodedOpcode &rNode)
             break;
         }
 
-    tracker.clobberRegX32(tracker.REG_TMP);
+    tracker.dirtyRegX32(tracker.REG_TMP);
 
     if(!freetmp)
     {
@@ -1513,7 +1513,7 @@ void Translator::generateFX33(const DecodedOpcode &rNode)
         r3 = X86_REG_CL;
     }
     else
-        tracker.clobberRegX8(r3);
+        tracker.dirtyRegX8(r3);
 
     codegen.mov_r32r32(tracker.REG_TMP, X86_REG_EAX);
     codegen.add_r32i32(r2, mC8_memBaseAddr);
@@ -1568,7 +1568,7 @@ void Translator::generateFX55(const DecodedOpcode &rNode)
         }
         else
         {
-            tracker.clobberRegX32(tracker.REG_TMP);
+            tracker.dirtyRegX32(tracker.REG_TMP);
 
             codegen.push_r32(X86_REG_EDX);
             codegen.mov_r32i32(tracker.REG_TMP, mC8_regBaseAddr + i);
@@ -1616,7 +1616,7 @@ void Translator::generateFX65(const DecodedOpcode &rNode)
         }
         else
         {
-            tracker.clobberRegX32(tracker.REG_TMP);
+            tracker.dirtyRegX32(tracker.REG_TMP);
 
             codegen.push_r32(X86_REG_EDX);
             codegen.mov_r32i32(tracker.REG_TMP, mC8_regBaseAddr + i);

@@ -55,9 +55,9 @@ class RegTracker
         uintptr_t           mC8_regBaseAddr;
         int                 mFreeRegX8Count;
 
-        int                 mClobberCount;
-        int                 mClobberedOrder[X86_COUNT_REGS_32BIT];
-        bool                mClobberedReg32[X86_COUNT_REGS_32BIT];
+        int                 mDirtyCount;
+        int                 mDirtyOrder[X86_COUNT_REGS_32BIT];
+        bool                mDirtyReg32[X86_COUNT_REGS_32BIT];
 
         /**
          * Reset the status (free/not free) of a IA 8 bit register
@@ -326,7 +326,7 @@ class RegTracker
          * PARAMS
          * x86reg   register to mark
          */
-        void clobberRegX32(const int x86reg);
+        void dirtyRegX32(const int x86reg);
 
         /**
          * Mark a IA 16 bit register as dirty
@@ -334,7 +334,7 @@ class RegTracker
          * PARAMS
          * x86reg   register to mark
          */
-        void clobberRegX16(const int x86reg);
+        void dirtyRegX16(const int x86reg);
 
         /**
          * Mark a IA 8 bit register as dirty
@@ -342,7 +342,7 @@ class RegTracker
          * PARAMS
          * x86reg   register to mark
          */
-        void clobberRegX8(const int x86reg);
+        void dirtyRegX8(const int x86reg);
 
         /**
          * Check to see if a IA 32bit register i dirty
@@ -353,12 +353,12 @@ class RegTracker
          * RETURNS
          * true if dirty otherwise false
          */
-        bool isClobberedX32(const int x86reg) const;
+        bool isDirtyX32(const int x86reg) const;
 
         /**
          * Pops dirty registers back from stack
          */
-        void restoreClobbered();
+        void restoreDirty();
 
         /**
          * Get the temporary IA 32 bit register

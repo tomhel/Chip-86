@@ -44,7 +44,7 @@ void RegTracker::doSaveRegX8(const int x86reg)
     {
         const int r32 = temporaryRegX32();
 
-        clobberRegX32(r32);
+        dirtyRegX32(r32);
 
         const uint32_t addr = mC8_regBaseAddr + mX86Reg8[x86reg].c8reg;
         codegen->mov_r32i32(r32, addr);
@@ -64,7 +64,7 @@ void RegTracker::doSaveRegX8(const int x86reg)
  */
 void RegTracker::doReplaceRegX8(const int x86reg_dst, const int x86reg_src, const bool loadvalue)
 {
-    clobberRegX8(x86reg_dst);
+    dirtyRegX8(x86reg_dst);
 
     if(!mX86Reg8[x86reg_dst].free)
         mFreeRegX8Count++;
@@ -91,7 +91,7 @@ void RegTracker::doSaveRegC16(const int x86reg)
     {
         const int r32 = temporaryRegX32();
 
-        clobberRegX32(r32);
+        dirtyRegX32(r32);
 
         codegen->mov_r32i32(r32, mC8_addressRegAddr);
         codegen->mov_m32r32(r32, x86reg);
@@ -110,7 +110,7 @@ void RegTracker::doSaveRegC16(const int x86reg)
  */
 void RegTracker::doAllocRegX8(const int x86reg, const int c8reg, const bool loadvalue)
 {
-    clobberRegX8(x86reg);
+    dirtyRegX8(x86reg);
 
     if(mX86Reg8[x86reg].free)
         mFreeRegX8Count--;
@@ -123,7 +123,7 @@ void RegTracker::doAllocRegX8(const int x86reg, const int c8reg, const bool load
     {
         const int r32 = temporaryRegX32();
 
-        clobberRegX32(r32);
+        dirtyRegX32(r32);
 
         const uint32_t addr = mC8_regBaseAddr + c8reg;
         codegen->mov_r32i32(r32, addr);
@@ -142,8 +142,8 @@ void RegTracker::doAllocRegX8(const int x86reg, const int c8reg, const bool load
  */
 void RegTracker::doSwapRegX8(const int x86reg1, const int x86reg2, const bool loadvalue)
 {
-    clobberRegX8(x86reg1);
-    clobberRegX8(x86reg2);
+    dirtyRegX8(x86reg1);
+    dirtyRegX8(x86reg2);
 
     const Reginfo tmp = mX86Reg8[x86reg1];
     mX86Reg8[x86reg1] = mX86Reg8[x86reg2];
@@ -185,7 +185,7 @@ void RegTracker::doAllocRegC16(const int x86reg, const bool loadvalue)
     if(!mX86Reg32.free)
         return;
 
-    clobberRegX32(x86reg);
+    dirtyRegX32(x86reg);
 
     mX86Reg32.free = false;
     mX86Reg32.modified = false;
@@ -194,7 +194,7 @@ void RegTracker::doAllocRegC16(const int x86reg, const bool loadvalue)
     {
         const int r32 = temporaryRegX32();
 
-        clobberRegX32(r32);
+        dirtyRegX32(r32);
 
         codegen->mov_r32i32(r32, mC8_addressRegAddr);
         codegen->mov_r32m32(x86reg, r32);
@@ -441,7 +441,7 @@ void RegTracker::saveRegisters()
         {
             if(!initialized)
             {
-                clobberRegX32(r32);
+                dirtyRegX32(r32);
                 codegen->mov_r32i32(r32, mC8_regBaseAddr);
                 initialized = true;
             }
@@ -565,9 +565,9 @@ void RegTracker::reset()
 
 
     for(int i = 0; i < X86_COUNT_REGS_32BIT; i++)
-        mClobberedReg32[i] = false;
+        mDirtyReg32[i] = false;
 
-    mClobberCount = 0;
+    mDirtyCount = 0;
 }
 
 /**
@@ -576,14 +576,14 @@ void RegTracker::reset()
  * PARAMS
  * x86reg   register to mark
  */
-void RegTracker::clobberRegX32(const int x86reg)
+void RegTracker::dirtyRegX32(const int x86reg)
 {
-    if(!mClobberedReg32[x86reg] && x86reg != REG_RET)
+    if(!mDirtyReg32[x86reg] && x86reg != REG_RET)
     {
-        mClobberedReg32[x86reg] = true;
-        mClobberedOrder[mClobberCount] = x86reg;
+        mDirtyReg32[x86reg] = true;
+        mDirtyOrder[mDirtyCount] = x86reg;
         codegen->push_r32(x86reg);
-        mClobberCount++;
+        mDirtyCount++;
     }
 }
 
@@ -593,9 +593,9 @@ void RegTracker::clobberRegX32(const int x86reg)
  * PARAMS
  * x86reg   register to mark
  */
-void RegTracker::clobberRegX16(const int x86reg)
+void RegTracker::dirtyRegX16(const int x86reg)
 {
-    clobberRegX32(x86reg);
+    dirtyRegX32(x86reg);
 }
 
 /**
@@ -604,9 +604,9 @@ void RegTracker::clobberRegX16(const int x86reg)
  * PARAMS
  * x86reg   register to mark
  */
-void RegTracker::clobberRegX8(const int x86reg)
+void RegTracker::dirtyRegX8(const int x86reg)
 {
-    clobberRegX32(x86reg & 0x3); //x86reg mod 4
+    dirtyRegX32(x86reg & 0x3); //x86reg mod 4
 }
 
 /**
@@ -618,20 +618,20 @@ void RegTracker::clobberRegX8(const int x86reg)
  * RETURNS
  * true if dirty otherwise false
  */
-bool RegTracker::isClobberedX32(const int x86reg) const
+bool RegTracker::isDirtyX32(const int x86reg) const
 {
-    return mClobberedReg32[x86reg];
+    return mDirtyReg32[x86reg];
 }
 
 /**
  * Pops dirty registers back from stack
  */
-void RegTracker::restoreClobbered()
+void RegTracker::restoreDirty()
 {
-    const int count = mClobberCount - 1;
+    const int count = mDirtyCount - 1;
 
     for(int i = count; i >= 0; i--)
-        codegen->pop_r32(mClobberedOrder[i]);
+        codegen->pop_r32(mDirtyOrder[i]);
 }
 
 /**
