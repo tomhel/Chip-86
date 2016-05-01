@@ -254,5 +254,5 @@ The Translation cache maps the whole memory area of Chip-8 using an array. The a
 
 #### RegTracker class
 
-This class keeps track of the register mapping between the native cpu and the Chip-8 cpu. When a register needs to be allocated the Translator asks the RegTracker for a register. The RegTracker will handle the code generation that is needed for this. The RegTracker will also generated to code necessary to store registers to the cpu context structure at the end of a block. It will also keep track of the registers used within a block of code and generate code for these registers to be pushed on the stack before use. At the end of a block it will add code to pop these values back.
+This class keeps track of the register mapping between the native cpu and the Chip-8 cpu. When a register needs to be allocated the Translator asks the RegTracker for a register. The RegTracker will handle the code generation that is needed for this. The RegTracker will also generate the code necessary to store registers to the cpu context structure at the end of a block. It will also keep track of the registers used within a block of code and generate code for these registers to be pushed on the stack before use. At the end of a block it will add code to pop these values back.
 
