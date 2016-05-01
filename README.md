@@ -4,6 +4,8 @@ Chip-86 is a Chip-8 emulator using dynamic translation (or dynamic recompilation
 
 ![chip86](chip86.png?raw=true)
 
+{:toc}
+
 ##License
 
 GPLv3
