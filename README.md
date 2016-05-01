@@ -163,7 +163,7 @@ The translator will translate code from the emulated system to native code.
 
 ####Code blocks
 
-Translated code is divided into blocks. The size of blocks is important for emulation speed. If the blocks are to small to much time will be spent in the dipatcher.
+Translated code is divided into blocks. The size of blocks is important for emulation speed. If the blocks are to small to much time will be spent in the dispatcher.
 
 ####Basic blocks
 
@@ -242,7 +242,7 @@ The Translator accepts one Chip-8 instruction at a time. The instructions are de
 
 #### TranslationCache class
 
-The Translation cache maps the whole memory area of Chip-8 using an array. The array stores pointers to CodeBlock objects. The Translation cache accepts a Chip-8 address and simply executes the code block on that address by calling its function pointer. The code cache returns true if the block is found or false otherwise.
+The Translation cache maps the whole memory area of Chip-8 using an array. The array stores pointers to CodeBlock objects. The Translation cache accepts a Chip-8 address and simply executes the code block on that address by calling its function pointer. The Translation cache returns true if the block is found or false otherwise.
 
 #### RegTracker class
 
