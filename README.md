@@ -118,7 +118,6 @@ The test applications found in the test directory.
 
 Use your prefered search engine ;)
 
-(#how-it-works)
 ##How it works
 
 ### Generate and execute machine code
