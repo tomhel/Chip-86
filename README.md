@@ -2,7 +2,7 @@
 
 Chip-86 is a Chip-8 emulator using dynamic translation (or dynamic recompilation) to x86. Written in C++ at the University of Gavle, Sweden, 2009.
 
-[chip86](chip86.png?raw=true)
+![chip86](chip86.png?raw=true)
 
 ##License
 
