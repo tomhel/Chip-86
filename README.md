@@ -4,8 +4,6 @@ Chip-86 is a Chip-8 emulator using dynamic translation (or dynamic recompilation
 
 ![chip86](chip86.png?raw=true)
 
-{:toc}
-
 ##License
 
 GPLv3
@@ -154,6 +152,8 @@ int ret = (*dynfunc)();
 
 ###Concepts
 
+![concepts](concepts.png?raw=true)
+
 ####Dispatcher
 
 The purpose of the dispatcher is to control the main flow of the emulator. It will check if code is translated or not. If the code is translated it will be executed. Otherwise, it will be translated.
@@ -231,6 +231,8 @@ The implementation defines these classes:
 - TranslationCache
 - Translator
 - RegTracker
+
+![uml](uml.png?raw=true)
 
 ####CodeBlock class
 
