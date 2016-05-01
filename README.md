@@ -1,6 +1,6 @@
 # Chip-86
 
-Chip-86 is a Chip-8 emulator using dynamic translation (or dynamic recompilation) to x86. Written in C++ at the University of Gavle, Sweden, 2009.
+Chip-86 is a Chip-8 emulator using dynamic translation (or dynamic recompilation) to x86. Written in C++ at the University of Gavle, Sweden, 2009. Dynamic translation is definitely overkill for Chip-8. It is more of a learning experience and proof of concept.
 
 ![chip86](chip86.png?raw=true)
 
@@ -202,7 +202,7 @@ Chip-8 has a register for flags, VF. It will indicate carry on addition and borr
 
 Chip-8 has a stack with a maxdepth of 16 to store return addresses. In this implementation the stack is represented by an array and code will be generated to push and pop to this array on Chip-8 Call and Return instructions.
 
-Chip-8 applications has alot of conditional instructions like:
+Chip-8 has conditional instructions like:
 
 ```
 IF something THEN skip next instruction
@@ -216,13 +216,13 @@ The code cache is where all generated code are stored.
 
 Because Chip-8 has very little memory by todays standards (3584 byte), we will allocate an array to hold all of this memory. This array will hold 4096 elements instead of 3584, the reason for this is that Chip-8 applications is allocated from 0x200 to 0xFFF. Each position in the array can point to a block of translated code.
 
-It is theoretically possible for Chip-8 applications to contain self modifying code. There is one instruction that could be used in this way, FX55. Although, i have not found any Chip-8 application that does this. So, for this reason this implementation does not handle self modifying code.
+It is theoretically possible for Chip-8 applications to contain self modifying code. There is one instruction that could be used in this way, FX55. Although, i have not found any Chip-8 applications that does this. So, for this reason this implementation does not handle self modifying code.
 
 ###Handling of timers, input, and graphics
 
 Chip-8 has 2 timers, one for sound and another for delays. These will decrement towards 0 everytime they are set to a value greater than 0. In the implementation this is done everytime a code block returns to the dispatcher. All graphics and input is also handled by the dispatcher.
 
-Because the implementation is much to fast for Chip-8 applications it has to be slowed down. A simple solution is a delay loop. This loop is placed in the dispatcher and will delay execution of the next block. To get a smooth emulation speed the emulator will do its best to execute around the same number of instructions before returning to the dispatcher.
+Because the implementation is much to fast for Chip-8 applications it has to be slowed down. A simple solution is a delay loop. This loop is placed in the dispatcher and will delay execution of the next block. To get a smooth emulation speed the emulator will do its best to always execute the same number of instructions before returning to the dispatcher.
 
 
 ###Implementation
