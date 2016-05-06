@@ -74,7 +74,7 @@ V | CHIP-8 key F
 
 ##Testing
 
-The test applications found in the test directory.
+Test applications are found in the test directory. Testing an emulator is hard. These applications test different parts of the emulator.
 
 - flag1
 
