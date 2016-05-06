@@ -33,7 +33,7 @@ The emulator is run from CLI. Run it without arguments to display help.
 chip86 <file> <speed> [tune]
 ```
 
-Arg | - | Description
+Argument | - | Description
 --- | --- | ---
 file | required | The Chip-8 application (rom).
 speed | required | Emulation speed, lower equals higher speed. Good values are 5-20.
@@ -104,7 +104,7 @@ The test applications found in the test directory.
 
         Counts from 0 to 9, and starts then over, in an infinite loop.
 
-        Expected output: A count from 0 to 9, then restarts at 0.
+        Expected output: A count from 0 to 9, then restarts at 0
 
 - bsort
 
@@ -112,7 +112,7 @@ The test applications found in the test directory.
         Upon completion it will enter an infinite idle loop at address 230h.
         To validate the output a memory dump is needed, starting at address 23Eh.
 
-        Expected output: A sorted sequence of numbers (in memory).
+        Expected output: A sorted sequence of numbers (in memory)
 
 ##Games
 
@@ -255,4 +255,3 @@ The Translation cache maps the whole memory area of Chip-8 using an array. The a
 #### RegTracker class
 
 This class keeps track of the register mapping between the native cpu and the Chip-8 cpu. When a register needs to be allocated the Translator asks the RegTracker for a register. The RegTracker will handle the code generation that is needed for this. The RegTracker will also generate the code necessary to store registers to the cpu context structure at the end of a block. It will also keep track of the registers used within a block of code and generate code for these registers to be pushed on the stack before use. At the end of a block it will add code to pop these values back.
-
