@@ -9,7 +9,7 @@
      *
      * Revision history:
      *   When         Who       What
-     *   20090531     me        created/modified original
+     *   20090531     me        created
      *
      * License information:
      *   GPLv3
@@ -22,11 +22,11 @@
 #include <stdint.h>
 
 #ifndef _WINDOWS
-# include <SDL/SDL.h>
-# include <SDL/SDL_opengl.h>
+ #include <SDL/SDL.h>
+ #include <SDL/SDL_opengl.h>
 #else
-# include "SDL_win/include/SDL.h"
-# include "SDL_win/include/SDL_opengl.h"
+ #include "SDL_win/include/SDL.h"
+ #include "SDL_win/include/SDL_opengl.h"
 #endif
 
 #include "Chip8def.h"
@@ -39,18 +39,18 @@
 #define SCALE_WIDTH  8
 #define SCALE_HEIGHT 8
 
-#define COL_PIX_ON_R  50 / 255.0
-#define COL_PIX_ON_G 205 / 255.0
-#define COL_PIX_ON_B  50 / 255.0
+#define COLOR_PIXEL_ON_R  50 / 255.0
+#define COLOR_PIXEL_ON_G 205 / 255.0
+#define COLOR_PIXEL_ON_B  50 / 255.0
 
-#define COL_PIX_OFF_R 0
-#define COL_PIX_OFF_G 0
-#define COL_PIX_OFF_B 0
+#define COLOR_PIXEL_OFF_R 0
+#define COLOR_PIXEL_OFF_G 0
+#define COLOR_PIXEL_OFF_B 0
 
-#define ARG_OPCOUNT 10
+#define DEFAULT_OPCOUNT 10
 
 #define APP_NAME         "Chip-86"
-#define APP_VERSION      "1.1"
+#define APP_VERSION      "0.2"
 #define APP_BINARY_NAME  "chip86"
 #define APP_WINDOW_TITLE "Chip-86"
 
@@ -113,7 +113,6 @@ void c8_reset()
     gC8_stackPointer = gC8_stack;
     gC8_seedRng = time(NULL);
     memset(gC8_regs, 0, sizeof(gC8_regs));
-    //memset(gC8_memory, 0, sizeof(gC8_memory));
     memset(gC8_keys, 0, sizeof(gC8_keys));
     memset(gC8_screen, 0, sizeof(gC8_screen));
     memcpy(gC8_memory, C8_FONT, sizeof(C8_FONT));
@@ -151,7 +150,6 @@ void c8_beep()
 bool c8_loadRom(const char *const pFile)
 {
     c8_reset();
-
     FILE *const pIn = fopen(pFile, "rb");
 
     if(pIn == NULL)
@@ -174,7 +172,6 @@ bool c8_loadRom(const char *const pFile)
     }
 
     fclose(pIn);
-
     return true;
 }
 
@@ -246,7 +243,7 @@ void handleInput(int &rDelay, int &rOpCount, const SDL_Event &rEvent)
  */
 void renderFrame()
 {
-    glClearColor(COL_PIX_OFF_R, COL_PIX_OFF_G, COL_PIX_OFF_B, 1.0);
+    glClearColor(COLOR_PIXEL_OFF_R, COLOR_PIXEL_OFF_G, COLOR_PIXEL_OFF_B, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
 
     for(int y = 0; y < C8_RES_HEIGHT; y++)
@@ -257,11 +254,11 @@ void renderFrame()
                 const int yy = y * SCALE_HEIGHT;
 
                 glBegin(GL_QUADS);
-                    glColor3f(COL_PIX_ON_R, COL_PIX_ON_G, COL_PIX_ON_B);
-                    glVertex2f(xx, yy);
-                    glVertex2f(xx + SCALE_WIDTH, yy);
-                    glVertex2f(xx + SCALE_WIDTH, yy + SCALE_HEIGHT);
-                    glVertex2f(xx, yy + SCALE_HEIGHT);
+                glColor3f(COLOR_PIXEL_ON_R, COLOR_PIXEL_ON_G, COLOR_PIXEL_ON_B);
+                glVertex2f(xx, yy);
+                glVertex2f(xx + SCALE_WIDTH, yy);
+                glVertex2f(xx + SCALE_WIDTH, yy + SCALE_HEIGHT);
+                glVertex2f(xx, yy + SCALE_HEIGHT);
                 glEnd();
             }
 
@@ -311,14 +308,14 @@ void dispatchLoop(int delay, int opcount)
         if(cache.executeN(gC8_pc, opcount))
         {
             c8_decreaseTimers();
-            //c8_beep();
+            c8_beep();
 
             while(SDL_GetTicks() < future)
                 SDL_Delay(0);
         }
         else
         {
-            while(dynarec.emit(c8_getOpcode(), gC8_pc)) ;
+            while(dynarec.emit(c8_getOpcode(), gC8_pc));
 
             while(dynarec.getCodeBlock(&ptr))
                 cache.insert(ptr);
@@ -336,13 +333,10 @@ void initGL()
     glOrtho(0, WINDOW_WIDTH, WINDOW_HEIGHT, 0, 0, 1);
     glEnable(GL_TEXTURE_2D);
     glDisable(GL_DEPTH_TEST);
-    //glDisable(GL_CULL_FACE);
-    //glDisable(GL_DITHER);
-    //glDisable(GL_BLEND);
     glMatrixMode (GL_MODELVIEW);
     glLoadIdentity();
     glTranslatef (0.375, 0.375, 0);
-    glClearColor(COL_PIX_OFF_R, COL_PIX_OFF_G, COL_PIX_OFF_B, 1.0);
+    glClearColor(COLOR_PIXEL_OFF_R, COLOR_PIXEL_OFF_G, COLOR_PIXEL_OFF_B, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
     glShadeModel(GL_FLAT);
 }
@@ -352,9 +346,9 @@ void initGL()
  */
 bool createSDLWindow()
 {
-	if(SDL_Init(SDL_INIT_VIDEO) < 0)
-	{
-	    fprintf(stderr, "Unable to init SDL: %s\n", SDL_GetError());
+    if(SDL_Init(SDL_INIT_VIDEO) < 0)
+    {
+        fprintf(stderr, "Unable to init SDL: %s\n", SDL_GetError());
         return false;
     }
 
@@ -364,16 +358,16 @@ bool createSDLWindow()
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 0);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
-	if(SDL_SetVideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, 16, SDL_OPENGL) == NULL)
-	{
-	    fprintf(stderr, "Video initialization failed: %s\n", SDL_GetError());
-		return false;
-	}
+    if(SDL_SetVideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, 16, SDL_OPENGL) == NULL)
+    {
+        fprintf(stderr, "Video initialization failed: %s\n", SDL_GetError());
+        return false;
+    }
 
     initGL();
     SDL_WM_SetCaption(APP_WINDOW_TITLE, NULL);
 
-	return true;
+    return true;
 }
 
 /**
@@ -398,7 +392,7 @@ void printHelp()
     printf("\t  is a positive integer that can be used to\n");
     printf("\t  finetune the emulation. This argument controls\n");
     printf("\t  emulation speed and smoothness.\n");
-    printf("\t  The argument is optional, default value is %u.\n", ARG_OPCOUNT);
+    printf("\t  The argument is optional, default value is %u.\n", DEFAULT_OPCOUNT);
     printf("\t  For most roms 5 to 20 are good values.\n");
 }
 
@@ -407,24 +401,21 @@ void printHelp()
  */
 int main(int argc, char *argv[])
 {
-    if(argc != 3 && argc != 4)
+    if(argc < 3)
     {
         printHelp();
         return 0;
     }
 
-    const int delay = atoi(argv[2]);
+    int delay = atoi(argv[2]);
+    int opcount = DEFAULT_OPCOUNT;
 
-    int opcount;
-
-    if(argc == 4)
+    if(argc >= 4)
         opcount = atoi(argv[3]);
-    else
-        opcount = ARG_OPCOUNT;
 
     if (!c8_loadRom(argv[1]))
     {
-        printf("Could not open file!\n");
+        fprintf(stderr, "Could not open file: %s\n", argv[1]);
         return 0;
     }
 
