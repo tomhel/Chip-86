@@ -218,7 +218,7 @@ Because Chip-8 has very little memory by todays standards (3584 byte), we will a
 
 It is theoretically possible for Chip-8 applications to contain self modifying code. There is one instruction that could be used in this way, FX55. Although, i have not found any Chip-8 applications that does this. So, for this reason this implementation does not handle self modifying code.
 
-###Handling of timers, input, and graphics
+###Handling of timers, input and graphics
 
 Chip-8 has 2 timers, one for sound and another for delays. These will decrement towards 0 everytime they are set to a value greater than 0. In the implementation this is done everytime a code block returns to the dispatcher. All graphics and input is also handled by the dispatcher.
 
