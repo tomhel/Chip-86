@@ -1,6 +1,6 @@
 #Chip-8 test applications
 
-These test applications are used to test diffrent aspects of the emulator.
+These test applications are used to test different aspects of the emulator.
 
 ##License
 
