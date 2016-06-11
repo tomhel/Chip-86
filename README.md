@@ -122,7 +122,7 @@ Use your prefered search engine ;)
 
 ### Generate and execute machine code
 
-To generate code dynamically we must now how GNU GCC (the compiler) handle function calls and return values.
+To generate code dynamically we must know how GNU GCC (the compiler) handle function calls and return values.
 
 It is enough to know that:
 - Arguments are pushed on the stack in reverse order.
