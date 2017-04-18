@@ -6,11 +6,11 @@ Chip-86 is a Chip-8 emulator using dynamic translation (or dynamic recompilation
 
 ![chip86](chip86.png?raw=true)
 
-##License
+## License
 
 GPLv3
 
-##Building
+## Building
 
 Requires SDL and OpenGL support
 
@@ -25,7 +25,7 @@ Requires SDL and OpenGL support
     make
     ```
 
-##Usage
+## Usage
 
 The emulator is run from CLI. Run it without arguments to display help.
 
@@ -41,13 +41,13 @@ tune | optional | Emulation speed and smoothness control. Good values are 5-20.
 
 If you are unsure about the speed and tune argument, 10 10 are good values to start at.
 
-###Example
+### Example
 
 ```
 chip86 test/count 5
 ```
 
-##Keys
+## Keys
 
 Key | Description
 --- | ---
@@ -72,7 +72,7 @@ R | CHIP-8 key D
 F | CHIP-8 key E
 V | CHIP-8 key F
 
-##Testing
+## Testing
 
 Test applications are found in the test directory. Testing an emulator is hard. These applications test different parts of the emulator.
 
@@ -114,11 +114,11 @@ Test applications are found in the test directory. Testing an emulator is hard. 
 
         Expected output: A sorted sequence of numbers (in memory)
 
-##Games
+## Games
 
 Use your prefered search engine ;)
 
-##How it works
+## How it works
 
 ### Generate and execute machine code
 
@@ -152,30 +152,30 @@ memcpy((void*)dynfunc, code, sizeof(code));
 int ret = (*dynfunc)();
 ```
 
-###Concepts
+### Concepts
 
 ![concepts](concepts.png?raw=true)
 
-####Dispatcher
+#### Dispatcher
 
 The purpose of the dispatcher is to control the main flow of the emulator. It will check if code is translated or not. If the code is translated it will be executed. Otherwise, it will be translated.
 
-####Code cache
+#### Code cache
 The translated code is stored in the code cache. 
 
-####Translator
+#### Translator
 
 The translator will translate code from the emulated system to native code.
 
-####Code blocks
+#### Code blocks
 
 Translated code is divided into blocks. The size of blocks is important for emulation speed. If the blocks are to small to much time will be spent in the dispatcher.
 
-####Basic blocks
+#### Basic blocks
 
 Basic blocks is a common concept in code compilation. A basic block has only one entry point and only one exit point.
 
-###Chip-8 system
+### Chip-8 system
 
 This is a brief summary of the Chip-8 system
 
@@ -188,7 +188,7 @@ This is a brief summary of the Chip-8 system
 - The display is monochrome and has a resolution of 64 x 32 pixels.
 - The sound is very simple, only a beep.
 
-###Code blocks and code generation
+### Code blocks and code generation
 
 In this implementation (Chip-86) code is translated to basic blocks to keep the implementation simple.
 
@@ -218,14 +218,14 @@ Because Chip-8 has very little memory by todays standards (3584 byte), we will a
 
 It is theoretically possible for Chip-8 applications to contain self modifying code. There is one instruction that could be used in this way, FX55. Although, i have not found any Chip-8 applications that does this. So, for this reason this implementation does not handle self modifying code.
 
-###Handling of timers, input and graphics
+### Handling of timers, input and graphics
 
 Chip-8 has 2 timers, one for sound and another for delays. These will decrement towards 0 everytime they are set to a value greater than 0. In the implementation this is done everytime a code block returns to the dispatcher. All graphics and input is also handled by the dispatcher.
 
 Because the implementation is much to fast for Chip-8 applications it has to be slowed down. A simple solution is a delay loop. This loop is placed in the dispatcher and will delay execution of the next block. To get a smooth emulation speed the emulator will do its best to always execute the same number of instructions before returning to the dispatcher.
 
 
-###Implementation
+### Implementation
 
 The implementation defines these classes:
 - CodeBlock
@@ -236,11 +236,11 @@ The implementation defines these classes:
 
 ![uml](uml.png?raw=true)
 
-####CodeBlock class
+#### CodeBlock class
 
 Every generated code block is contained in a CodeBlock object. This class has a function pointer to call the code and a destructor to deallocate the code.
 
-####CodeGenerator class
+#### CodeGenerator class
 
 This class has an assemply-like interface. Its purpose is to generate native machine code. The Code generator can handle labels and jumps to these labels. Code is generated when the assembly-like functions are called, but this is not true for jumps. Those are generated last.
 
