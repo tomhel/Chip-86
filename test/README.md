@@ -1,12 +1,12 @@
-#Chip-8 test applications
+# Chip-8 test applications
 
 These test applications are used to test different aspects of the emulator.
 
-##License
+## License
 
 GPLv3
 
-##Pseudocode for test applications
+## Pseudocode for test applications
 
 - flags1 (check flags on addition)
 
