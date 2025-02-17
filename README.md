@@ -14,10 +14,10 @@ GPLv3
 
 Requires SDL and OpenGL support
 
-1. Install libsdl-dev
+1. Install libsdl-dev (requires 32bit)
 
     ```
-    apt-get install libsdl-dev
+    apt-get install libsdl-dev:i386
     ```
 
 2. Build
