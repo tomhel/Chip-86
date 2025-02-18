@@ -173,7 +173,7 @@ Translated code is divided into blocks. The size of blocks is important for emul
 
 #### Basic blocks
 
-Basic blocks is a common concept in code compilation. A basic block has only one entry point and only one exit point.
+Basic blocks is a common concept in code compilation. A basic block has only one entry point and only one exit point. In a simple implementation code blocks are equivalent to basic blocks.
 
 ### Chip-8 system
 
@@ -198,7 +198,7 @@ If the address register is used it will always be allocated to the ESI register.
 
 The code in a block is generated in such a way that it can be called as a regular function. The registers used by the code block is first pushed on the stack and popped back at the end. Each block returns the (Chip-8) address to the next block to be executed. This is a simple solution and it will be left to the dispatcher to execute the next block.
 
-Chip-8 has a register for flags, VF. It will indicate carry on addition and borrow on subtraction. On shift operations VF will contain the lost bit. In this implementation all these flags a computed natively on the cpu, although we will copy the flag to the register where VF is allocated.
+Chip-8 has a register for flags, VF. It will indicate carry on addition and borrow on subtraction. On shift operations VF will contain the lost bit. In this implementation all these flags are computed natively on the cpu, although we will copy the flag to the register where VF is allocated.
 
 Chip-8 has a stack with a maxdepth of 16 to store return addresses. In this implementation the stack is represented by an array and code will be generated to push and pop to this array on Chip-8 Call and Return instructions.
 
